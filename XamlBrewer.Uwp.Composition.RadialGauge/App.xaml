@@ -4,5 +4,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:XamlBrewer.Uwp.Composition.RadialGauge"
     RequestedTheme="Light">
-
+    <Application.Resources>
+        <!-- Theme Resources -->
+        <!-- Header -->
+        <SolidColorBrush x:Key="TitlebarBackgroundBrush"
+                         Color="#FFD4A56A" />
+        <SolidColorBrush x:Key="StatusbarBackgroundBrush"
+                         Color="#FFD4A56A" />
+        <!-- Splitview Pane -->
+        <SolidColorBrush x:Key="SplitViewBackgroundBrush"
+                         Color="#FF486F88" />
+        <SolidColorBrush x:Key="SplitViewForegroundBrush"
+                         Color="White" />
+        <SolidColorBrush x:Key="SplitViewHighlightBrush"
+                         Color="Orange" />
+        <!-- Splitview Content -->
+        <SolidColorBrush x:Key="PageBackgroundBrush"
+                         Color="#FFFFF7AA" />
+    </Application.Resources>
 </Application>

@@ -105,7 +105,9 @@
     <Compile Include="ViewModels\MenuItem.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="Views\Shell.xaml.cs" />
+    <Compile Include="Views\Shell.xaml.cs" >
+      <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SquareOfNewPage.xaml.cs">
       <DependentUpon>SquareOfNewPage.xaml</DependentUpon>
     </Compile>

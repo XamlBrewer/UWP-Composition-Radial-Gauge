@@ -8,7 +8,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
 
-    <Grid Background="Green">
+    <Grid Background="{StaticResource PageBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
@@ -19,14 +19,18 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Old"
-                   Margin="20" />
+        <TextBlock Text="All XAML gauge"
+                   Margin="20"
+                   FontSize="20"
+                   Foreground="{StaticResource SplitViewBackgroundBrush}" />
         <classic:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
                              Grid.Row="1"
                              Margin="20 20 10 20" />
 
-        <TextBlock Text="New"
+        <TextBlock Text="Composition API supported gauge"
                    Grid.Column="1"
+                   FontSize="20"
+                   Foreground="{StaticResource SplitViewBackgroundBrush}"
                    HorizontalAlignment="Right"
                    Margin="20" />
         <controls:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"

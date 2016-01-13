@@ -27,10 +27,17 @@ namespace XamlBrewer.Uwp.Composition.RadialGauge
                 {
                     SplitViewFrame.Navigate(menuItem.NavigationDestination);
                 }
-                else
-                {
-                    menuItem.Command.Execute(null);
-                }
+            }
+        }
+
+        // Execute command.
+        private void Menu_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var menuItem = e.ClickedItem as MenuItem;
+
+            if (!menuItem.IsNavigation)
+            {
+                menuItem.Command.Execute(null);
             }
         }
 
