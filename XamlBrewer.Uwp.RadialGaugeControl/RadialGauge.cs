@@ -79,8 +79,8 @@
         protected static readonly DependencyProperty ValueAngleProperty =
             DependencyProperty.Register("ValueAngle", typeof(double), typeof(RadialGauge), new PropertyMetadata(null));
 
-        protected static readonly DependencyProperty TicksProperty =
-            DependencyProperty.Register("Ticks", typeof(IEnumerable<double>), typeof(RadialGauge), new PropertyMetadata(null));
+        //protected static readonly DependencyProperty TicksProperty =
+        //    DependencyProperty.Register("Ticks", typeof(IEnumerable<double>), typeof(RadialGauge), new PropertyMetadata(null));
 
         #endregion Dependency Property Registrations
 
@@ -89,7 +89,7 @@
         public RadialGauge()
         {
             this.DefaultStyleKey = typeof(RadialGauge);
-            this.Ticks = this.getTicks();
+            //this.Ticks = this.getTicks();
         }
 
         #endregion Constructors
@@ -228,11 +228,11 @@
             set { SetValue(ValueAngleProperty, value); }
         }
 
-        public IEnumerable<double> Ticks
-        {
-            get { return (IEnumerable<double>)GetValue(TicksProperty); }
-            protected set { SetValue(TicksProperty, value); }
-        }
+        //public IEnumerable<double> Ticks
+        //{
+        //    get { return (IEnumerable<double>)GetValue(TicksProperty); }
+        //    protected set { SetValue(TicksProperty, value); }
+        //}
 
         #endregion Properties
 

@@ -12,7 +12,7 @@
                               Width="200">
 
                             <!-- Ticks -->
-                            <Line x:Name="TicksProxy"
+                            <!--<Line x:Name="TicksProxy"
                                   Visibility="Collapsed"
                                   Fill="{TemplateBinding TickBrush}" />
                             <ItemsControl ItemsSource="{TemplateBinding Ticks}"
@@ -38,7 +38,7 @@
                                         </Rectangle>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            </ItemsControl>-->
 
                             <!-- Scale -->
                             <Path Name="PART_Scale"
@@ -51,7 +51,7 @@
                                   StrokeThickness="{TemplateBinding ScaleWidth}" />
 
                             <!-- Scale Ticks -->
-                            <Line x:Name="ScaleTicksProxy"
+                            <!--<Line x:Name="ScaleTicksProxy"
                                   Visibility="Collapsed"
                                   Fill="{TemplateBinding ScaleTickBrush}"
                                   X1="{TemplateBinding ScaleWidth}" />
@@ -78,7 +78,7 @@
                                         </Rectangle>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            </ItemsControl>-->
 
                             <!-- Value and Unit -->
                             <StackPanel VerticalAlignment="Bottom"
