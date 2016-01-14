@@ -1,14 +1,14 @@
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:XamlBrewer.Uwp.Controls">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:XamlBrewer.Uwp.Controls">
 
     <Style TargetType="local:RadialGauge">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:RadialGauge">
                     <Viewbox>
-                        <Grid Height="200"
+                        <Grid x:Name="PART_Container"
+                              Height="200"
                               Width="200">
 
                             <!-- Ticks -->
@@ -98,13 +98,13 @@
                             </StackPanel>
 
                             <!-- Needle -->
-                            <Grid>
+                            <!--<Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <!-- The RenderTransform is in code behind. -->
+                                --><!-- The RenderTransform is in code behind. --><!--
                                 <Path Name="PART_Needle"
                                       Stretch="Uniform"
                                       HorizontalAlignment="Center"
@@ -112,7 +112,7 @@
                                       Data="M 0,0 l 0,100 l 5,0 l 0,-100 l -5,0"
                                       RenderTransformOrigin="0.5,1">
                                 </Path>
-                            </Grid>
+                            </Grid>-->
                         </Grid>
                     </Viewbox>
                 </ControlTemplate>

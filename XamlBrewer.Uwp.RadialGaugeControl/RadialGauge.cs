@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Numerics;
     using Windows.Foundation;
     using Windows.UI;
+    using Windows.UI.Composition;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Media;
@@ -12,7 +14,7 @@
     /// <summary>
     /// A Modern UI Radial Gauge.
     /// </summary>
-    [TemplatePart(Name = NeedlePartName, Type = typeof(Path))]
+    [TemplatePart(Name = ContainerPartName, Type = typeof(Grid))]
     [TemplatePart(Name = ScalePartName, Type = typeof(Path))]
     [TemplatePart(Name = TrailPartName, Type = typeof(Path))]
     [TemplatePart(Name = ValueTextPartName, Type = typeof(TextBlock))]
@@ -20,7 +22,7 @@
     {
         #region Constants
 
-        private const string NeedlePartName = "PART_Needle";
+        private const string ContainerPartName = "PART_Container";
 
         private const string ScalePartName = "PART_Scale";
 
@@ -30,7 +32,15 @@
 
         private const double Degrees2Radians = Math.PI / 180;
 
+        private const double MinAngle = -150.0;
+
+        private const double MaxAngle = 150.0;
+
         #endregion Constants
+
+        private Compositor _compositor;
+        private ContainerVisual _root;
+        private SpriteVisual _needle;
 
         #region Dependency Property Registrations
 
@@ -50,13 +60,13 @@
             DependencyProperty.Register("Unit", typeof(string), typeof(RadialGauge), new PropertyMetadata(string.Empty));
 
         public static readonly DependencyProperty NeedleBrushProperty =
-            DependencyProperty.Register("NeedleBrush", typeof(Brush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.Red)));
+            DependencyProperty.Register("NeedleBrush", typeof(SolidColorBrush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.Red)));
 
         public static readonly DependencyProperty ScaleBrushProperty =
             DependencyProperty.Register("ScaleBrush", typeof(Brush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.DarkGray)));
 
         public static readonly DependencyProperty TickBrushProperty =
-            DependencyProperty.Register("TickBrush", typeof(Brush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.White)));
+            DependencyProperty.Register("TickBrush", typeof(SolidColorBrush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.White)));
 
         public static readonly DependencyProperty TrailBrushProperty =
             DependencyProperty.Register("TrailBrush", typeof(Brush), typeof(RadialGauge), new PropertyMetadata(new SolidColorBrush(Colors.Orange)));
@@ -74,7 +84,7 @@
             DependencyProperty.Register("ValueStringFormat", typeof(string), typeof(RadialGauge), new PropertyMetadata("N0"));
 
         public static readonly DependencyProperty TickSpacingProperty =
-        DependencyProperty.Register("TickSpacing", typeof(int), typeof(RadialGauge), new PropertyMetadata(10)); 
+        DependencyProperty.Register("TickSpacing", typeof(int), typeof(RadialGauge), new PropertyMetadata(10));
 
         protected static readonly DependencyProperty ValueAngleProperty =
             DependencyProperty.Register("ValueAngle", typeof(double), typeof(RadialGauge), new PropertyMetadata(null));
@@ -89,7 +99,6 @@
         public RadialGauge()
         {
             this.DefaultStyleKey = typeof(RadialGauge);
-            //this.Ticks = this.getTicks();
         }
 
         #endregion Constructors
@@ -144,9 +153,9 @@
         /// <summary>
         /// Gets or sets the needle brush.
         /// </summary>
-        public Brush NeedleBrush
+        public SolidColorBrush NeedleBrush
         {
-            get { return (Brush)GetValue(NeedleBrushProperty); }
+            get { return (SolidColorBrush)GetValue(NeedleBrushProperty); }
             set { SetValue(NeedleBrushProperty, value); }
         }
 
@@ -171,18 +180,18 @@
         /// <summary>
         /// Gets or sets the scale tick brush.
         /// </summary>
-        public Brush ScaleTickBrush
+        public SolidColorBrush ScaleTickBrush
         {
-            get { return (Brush)GetValue(ScaleTickBrushProperty); }
+            get { return (SolidColorBrush)GetValue(ScaleTickBrushProperty); }
             set { SetValue(ScaleTickBrushProperty, value); }
         }
 
         /// <summary>
         /// Gets or sets the outer tick brush.
         /// </summary>
-        public Brush TickBrush
+        public SolidColorBrush TickBrush
         {
-            get { return (Brush)GetValue(TickBrushProperty); }
+            get { return (SolidColorBrush)GetValue(TickBrushProperty); }
             set { SetValue(TickBrushProperty, value); }
         }
 
@@ -220,7 +229,7 @@
         {
             get { return (int)GetValue(TickSpacingProperty); }
             set { SetValue(TickSpacingProperty, value); }
-        } 
+        }
 
         protected double ValueAngle
         {
@@ -246,16 +255,53 @@
                 var pf = new PathFigure();
                 pf.IsClosed = false;
                 var middleOfScale = 77 - this.ScaleWidth / 2;
-                pf.StartPoint = this.ScalePoint(-150, middleOfScale);
+                pf.StartPoint = this.ScalePoint(MinAngle, middleOfScale);
                 var seg = new ArcSegment();
                 seg.SweepDirection = SweepDirection.Clockwise;
                 seg.IsLargeArc = true;
                 seg.Size = new Size(middleOfScale, middleOfScale);
-                seg.Point = this.ScalePoint(150, middleOfScale);
+                seg.Point = this.ScalePoint(MaxAngle, middleOfScale);
                 pf.Segments.Add(seg);
                 pg.Figures.Add(pf);
                 scale.Data = pg;
             }
+
+            var container = this.GetTemplateChild(ContainerPartName) as Grid;
+            _root = container.GetVisual();
+            _compositor = _root.Compositor;
+
+            // Draw Ticks
+            SpriteVisual tick;
+            for (double i = -150; i <= 150; i += ((MaxAngle - MinAngle) / TickSpacing))
+            {
+                tick = _compositor.CreateSpriteVisual();
+                tick.Size = new Vector2(5.0f, 20.0f);
+                tick.Brush = _compositor.CreateColorBrush(TickBrush.Color);
+                tick.Offset = new Vector3(97.5f, 0.0f, 0);
+                tick.CenterPoint = new Vector3(2.5f, 100.0f, 0);
+                tick.RotationAngleInDegrees = (float)i;
+                _root.Children.InsertAtTop(tick);
+            }
+
+            // Draw Scale Ticks
+            for (double i = -150; i <= 150; i += ((MaxAngle - MinAngle) / TickSpacing))
+            {
+                tick = _compositor.CreateSpriteVisual();
+                tick.Size = new Vector2(2.0f, 30.0f);
+                tick.Brush = _compositor.CreateColorBrush(ScaleTickBrush.Color);
+                tick.Offset = new Vector3(99.0f, 25.0f, 0);
+                tick.CenterPoint = new Vector3(1.0f, 75.0f, 0);
+                tick.RotationAngleInDegrees = (float)i;
+                _root.Children.InsertAtTop(tick);
+            }
+
+            // Needle
+            _needle = _compositor.CreateSpriteVisual();
+            _needle.Size = new Vector2(5.0f, 100.0f);
+            _needle.Brush = _compositor.CreateColorBrush(NeedleBrush.Color);
+            _needle.CenterPoint = new Vector3(2.5f, 100.0f, 0);
+            _needle.Offset = new Vector3(97.5f, 0.0f, 0);
+            _root.Children.InsertAtTop(_needle);
 
             OnValueChanged(this);
             base.OnApplyTemplate();
@@ -272,15 +318,11 @@
             if (!Double.IsNaN(c.Value))
             {
                 var middleOfScale = 77 - c.ScaleWidth / 2;
-                var needle = c.GetTemplateChild(NeedlePartName) as Path;
                 var valueText = c.GetTemplateChild(ValueTextPartName) as TextBlock;
                 c.ValueAngle = c.ValueToAngle(c.Value);
 
                 // Needle
-                if (needle != null)
-                {
-                    needle.RenderTransform = new RotateTransform() { Angle = c.ValueAngle };
-                }
+                c._needle.RotationAngleInDegrees = (float)c.ValueAngle;
 
                 // Trail
                 var trail = c.GetTemplateChild(TrailPartName) as Path;
@@ -324,29 +366,26 @@
 
         private double ValueToAngle(double value)
         {
-            double minAngle = -150;
-            double maxAngle = 150;
-
             // Off-scale to the left
             if (value < this.Minimum)
             {
-                return minAngle - 7.5;
+                return MinAngle - 7.5;
             }
 
             // Off-scale to the right
             if (value > this.Maximum)
             {
-                return maxAngle + 7.5;
+                return MaxAngle + 7.5;
             }
 
-            double angularRange = maxAngle - minAngle;
+            double angularRange = MaxAngle - MinAngle;
 
-            return (value - this.Minimum) / (this.Maximum - this.Minimum) * angularRange + minAngle;
+            return (value - this.Minimum) / (this.Maximum - this.Minimum) * angularRange + MinAngle;
         }
 
         private IEnumerable<double> getTicks()
         {
-            double tickSpacing = TickSpacing; 
+            double tickSpacing = TickSpacing;
             // double tickSpacing = (this.Maximum - this.Minimum) / 10;
             for (double tick = this.Minimum; tick <= this.Maximum; tick += tickSpacing)
             {
