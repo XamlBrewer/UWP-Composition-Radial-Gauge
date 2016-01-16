@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using XamlBrewer.Uwp.Controls;
 
 
@@ -31,6 +20,7 @@ namespace XamlBrewer.Uwp.Composition.RadialGauge
 
         private void SquareOfOldPage_Loaded(object sender, RoutedEventArgs e)
         {
+            var random = new Random((int)DateTime.Now.Ticks);
             foreach (var square in SquareOfSquares.Squares)
             {
                 var gauge = new U2UC.WinUni.Controls.RadialGauge() { Height = square.ActualHeight, Width = square.ActualWidth };
@@ -39,6 +29,7 @@ namespace XamlBrewer.Uwp.Composition.RadialGauge
                 gauge.ScaleTickBrush = App.Current.Resources["PageBackgroundBrush"] as SolidColorBrush;
                 gauge.NeedleBrush = App.Current.Resources["NeedleBrush"] as SolidColorBrush;
                 gauge.ValueBrush = gauge.TrailBrush;
+                gauge.ScaleWidth = random.Next(5, 77);
                 gauge.Maximum = 50;
                 gauge.TickSpacing = 5;
                 var side = square.Side();

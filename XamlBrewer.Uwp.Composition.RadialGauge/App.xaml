@@ -24,11 +24,11 @@
 
         <!-- Gauge Colors -->
         <SolidColorBrush x:Name="ScaleBrush"
-                         Color="#FFD4CA6A" />
+                         Color="#FFD4A56A" />
         <SolidColorBrush x:Name="ScaleTickBrush"
                          Color="#FFFFF7AA" />
         <SolidColorBrush x:Name="TrailBrush"
-                         Color="#FF8E79AD" />
+                         Color="#FF486F88" />
         <SolidColorBrush x:Name="TickBrush"
                          Color="#FFD4CA6A" />
         <SolidColorBrush x:Name="NeedleBrush"

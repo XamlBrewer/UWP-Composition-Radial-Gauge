@@ -12,6 +12,7 @@ namespace Mvvm
             Menu.Add(new MenuItem() { Glyph = Symbol.Remote, Text = "Comparison", NavigationDestination = typeof(MainPage) });
             Menu.Add(new MenuItem() { Glyph = Symbol.OutlineStar, Text = "Classic", NavigationDestination = typeof(SquareOfOldPage) });
             Menu.Add(new MenuItem() { Glyph = Symbol.SolidStar, Text = "New", NavigationDestination = typeof(SquareOfNewPage) });
+            Menu.Add(new MenuItem() { Glyph = Symbol.Globe, Text = "Gallery", NavigationDestination = typeof(GalleryPage) });
         }
     }
 }
