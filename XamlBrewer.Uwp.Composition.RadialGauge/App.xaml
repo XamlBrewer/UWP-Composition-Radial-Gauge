@@ -21,5 +21,17 @@
         <!-- Splitview Content -->
         <SolidColorBrush x:Key="PageBackgroundBrush"
                          Color="#FFFFF7AA" />
+
+        <!-- Gauge Colors -->
+        <SolidColorBrush x:Name="ScaleBrush"
+                         Color="#FFD4CA6A" />
+        <SolidColorBrush x:Name="ScaleTickBrush"
+                         Color="#FFFFF7AA" />
+        <SolidColorBrush x:Name="TrailBrush"
+                         Color="#FF8E79AD" />
+        <SolidColorBrush x:Name="TickBrush"
+                         Color="#FFD4CA6A" />
+        <SolidColorBrush x:Name="NeedleBrush"
+                         Color="#FFCC3D29" />
     </Application.Resources>
 </Application>

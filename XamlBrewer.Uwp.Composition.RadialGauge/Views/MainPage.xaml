@@ -24,6 +24,14 @@
                    FontSize="20"
                    Foreground="{StaticResource SplitViewBackgroundBrush}" />
         <classic:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
+                             NeedleBrush="{StaticResource NeedleBrush}"
+                             ScaleBrush="{StaticResource ScaleBrush}"
+                             ScaleTickBrush="{StaticResource ScaleTickBrush}"
+                             TrailBrush="{StaticResource TrailBrush}"
+                             ValueBrush="{StaticResource TrailBrush}"
+                             TickBrush="{StaticResource TickBrush}"
+                             UnitBrush="{StaticResource TickBrush}"
+                             Unit="Items"
                              Grid.Row="1"
                              Margin="20 20 10 20" />
 
@@ -34,6 +42,14 @@
                    HorizontalAlignment="Right"
                    Margin="20" />
         <controls:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
+                              NeedleBrush="{StaticResource NeedleBrush}"
+                              ScaleBrush="{StaticResource ScaleBrush}"
+                              ScaleTickBrush="{StaticResource ScaleTickBrush}"
+                              TrailBrush="{StaticResource TrailBrush}"
+                              ValueBrush="{StaticResource TrailBrush}"
+                              TickBrush="{StaticResource TickBrush}"
+                              UnitBrush="{StaticResource TickBrush}"
+                              Unit="Items"
                               Grid.Row="1"
                               Grid.Column="1"
                               Margin="10 20 20 20" />

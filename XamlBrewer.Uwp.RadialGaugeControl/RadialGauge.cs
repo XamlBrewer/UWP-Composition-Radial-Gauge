@@ -1,7 +1,6 @@
 ﻿namespace XamlBrewer.Uwp.Controls
 {
     using System;
-    using System.Collections.Generic;
     using System.Numerics;
     using Windows.Foundation;
     using Windows.UI;
@@ -102,6 +101,8 @@
         }
 
         #endregion Constructors
+
+
 
         #region Properties
 
@@ -237,12 +238,6 @@
             set { SetValue(ValueAngleProperty, value); }
         }
 
-        //public IEnumerable<double> Ticks
-        //{
-        //    get { return (IEnumerable<double>)GetValue(TicksProperty); }
-        //    protected set { SetValue(TicksProperty, value); }
-        //}
-
         #endregion Properties
 
         protected override void OnApplyTemplate()
@@ -266,32 +261,33 @@
                 scale.Data = pg;
             }
 
+
             var container = this.GetTemplateChild(ContainerPartName) as Grid;
             _root = container.GetVisual();
             _compositor = _root.Compositor;
 
             // Draw Ticks
             SpriteVisual tick;
-            for (double i = -150; i <= 150; i += ((MaxAngle - MinAngle) / TickSpacing))
+            for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
                 tick = _compositor.CreateSpriteVisual();
-                tick.Size = new Vector2(5.0f, 20.0f);
+                tick.Size = new Vector2(5.0f, 18.0f);
                 tick.Brush = _compositor.CreateColorBrush(TickBrush.Color);
                 tick.Offset = new Vector3(97.5f, 0.0f, 0);
                 tick.CenterPoint = new Vector3(2.5f, 100.0f, 0);
-                tick.RotationAngleInDegrees = (float)i;
+                tick.RotationAngleInDegrees = (float)ValueToAngle(i);
                 _root.Children.InsertAtTop(tick);
             }
 
             // Draw Scale Ticks
-            for (double i = -150; i <= 150; i += ((MaxAngle - MinAngle) / TickSpacing))
+            for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
                 tick = _compositor.CreateSpriteVisual();
-                tick.Size = new Vector2(2.0f, 30.0f);
+                tick.Size = new Vector2(2.0f, (float)ScaleWidth);
                 tick.Brush = _compositor.CreateColorBrush(ScaleTickBrush.Color);
-                tick.Offset = new Vector3(99.0f, 25.0f, 0);
-                tick.CenterPoint = new Vector3(1.0f, 75.0f, 0);
-                tick.RotationAngleInDegrees = (float)i;
+                tick.Offset = new Vector3(99.0f, 23.0f, 0);
+                tick.CenterPoint = new Vector3(1.0f, 77.0f, 0);
+                tick.RotationAngleInDegrees = (float)ValueToAngle(i);
                 _root.Children.InsertAtTop(tick);
             }
 
@@ -322,7 +318,10 @@
                 c.ValueAngle = c.ValueToAngle(c.Value);
 
                 // Needle
-                c._needle.RotationAngleInDegrees = (float)c.ValueAngle;
+                if (c._needle != null)
+                {
+                    c._needle.RotationAngleInDegrees = (float)c.ValueAngle;
+                }
 
                 // Trail
                 var trail = c.GetTemplateChild(TrailPartName) as Path;
@@ -381,16 +380,6 @@
             double angularRange = MaxAngle - MinAngle;
 
             return (value - this.Minimum) / (this.Maximum - this.Minimum) * angularRange + MinAngle;
-        }
-
-        private IEnumerable<double> getTicks()
-        {
-            double tickSpacing = TickSpacing;
-            // double tickSpacing = (this.Maximum - this.Minimum) / 10;
-            for (double tick = this.Minimum; tick <= this.Maximum; tick += tickSpacing)
-            {
-                yield return ValueToAngle(tick);
-            }
         }
     }
 }
