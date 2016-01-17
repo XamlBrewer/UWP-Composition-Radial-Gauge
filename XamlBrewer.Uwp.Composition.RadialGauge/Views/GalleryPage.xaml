@@ -1,13 +1,157 @@
-﻿<Page
-    x:Class="XamlBrewer.Uwp.Composition.RadialGauge.GalleryPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:XamlBrewer.Uwp.Composition.RadialGauge.Views"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+﻿<Page x:Class="XamlBrewer.Uwp.Composition.RadialGauge.GalleryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:XamlBrewer.Uwp.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key='Brown'
+                         Color='#FFAA7839' />
+        <SolidColorBrush x:Key='VeryLightBrown'
+                         Color='#FFFFD9AA' />
+        <SolidColorBrush x:Key='LightBrown'
+                         Color='#FFD4A56A' />
+        <SolidColorBrush x:Key='DarkBrown'
+                         Color='#FF805115' />
+        <SolidColorBrush x:Key='VeryDarkBrown'
+                         Color='#FF552F00' />
+        <SolidColorBrush x:Key='Khaki'
+                         Color='#FFAA9F39' />
+        <SolidColorBrush x:Key='VeryLightKhaki'
+                         Color='#FFFFF7AA' />
+        <SolidColorBrush x:Key='LightKhaki'
+                         Color='#FFD4CA6A' />
+        <SolidColorBrush x:Key='DarkKhaki'
+                         Color='#FF807515' />
+        <SolidColorBrush x:Key='VeryDarkKhaki'
+                         Color='#FF554D00' />
+        <SolidColorBrush x:Key='Purple'
+                         Color='#FF4A2D73' />
+        <SolidColorBrush x:Key='VeryLightPurple'
+                         Color='#FF8E79AD' />
+        <SolidColorBrush x:Key='LightPurple'
+                         Color='#FF6A4E90' />
+        <SolidColorBrush x:Key='DarkPurple'
+                         Color='#FF301557' />
+        <SolidColorBrush x:Key='VeryDarkPurple'
+                         Color='#FF1B053A' />
+        <SolidColorBrush x:Key='Blue'
+                         Color='#FF29526D' />
+        <SolidColorBrush x:Key='VeryLightBlue'
+                         Color='#FF708FA3' />
+        <SolidColorBrush x:Key='LightBlue'
+                         Color='#FF486F88' />
+        <SolidColorBrush x:Key='DarkBlue'
+                         Color='#FF123852' />
+        <SolidColorBrush x:Key='VeryDarkBlue'
+                         Color='#FF032236' />
+    </Page.Resources>
 
     <Grid Background="{StaticResource PageBackgroundBrush}">
-
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="4"
+              Grid.Row="0"
+              Grid.Column="0">
+            <controls:RadialGauge Value="85"
+                                  Unit="items"
+                                  TickBrush="{StaticResource VeryLightPurple}"
+                                  ValueBrush="{StaticResource LightPurple}"
+                                  UnitBrush="{StaticResource VeryLightPurple}"
+                                  ScaleTickBrush="{StaticResource VeryLightKhaki}"
+                                  NeedleBrush="{StaticResource NeedleBrush}"
+                                  TrailBrush="{StaticResource LightPurple}"
+                                  TickSpacing="20"
+                                  Margin="4" />
+        </Grid>
+        <Grid Margin="4"
+              Background="{StaticResource VeryDarkKhaki}"
+              Grid.Row="0"
+              Grid.Column="1">
+            <controls:RadialGauge  Value="85"
+                                   Unit="items"
+                                   ScaleTickBrush="{StaticResource VeryDarkKhaki}"
+                                   ScaleBrush="{StaticResource DarkKhaki}"
+                                   TrailBrush="{StaticResource LightKhaki}"
+                                   ValueBrush="{StaticResource LightKhaki}"
+                                   UnitBrush="{StaticResource Khaki}"
+                                   TickBrush="Transparent"
+                                   NeedleBrush="Transparent"
+                                   Margin="4" />
+        </Grid>
+        <Grid Margin="4"
+              Background="{StaticResource VeryLightBrown}"
+              Grid.Row="0"
+              Grid.Column="2">
+            <Image Source="ms-appx:///Assets/bottles.png" Stretch="UniformToFill" Opacity=".25" />
+            <controls:RadialGauge Value="85"
+                                  Unit="bottles of beer on the wall"
+                                  TickBrush="Transparent"
+                                  ScaleTickBrush="Transparent"
+                                  NeedleBrush="{StaticResource DarkBrown}"
+                                  TrailBrush="{StaticResource DarkBrown}"
+                                  UnitBrush="{StaticResource VeryDarkBrown}"
+                                  ValueBrush="{StaticResource DarkBrown}"
+                                  Margin="4">
+                <controls:RadialGauge.ScaleBrush>
+                    <SolidColorBrush Color="#FFFFD9AA" Opacity=".5" />
+                </controls:RadialGauge.ScaleBrush>
+            </controls:RadialGauge>
+        </Grid>
+        <Grid Margin="4"
+              Background="{StaticResource VeryDarkBrown}"
+              Grid.Row="1"
+              Grid.Column="0">
+            <controls:RadialGauge Value="85"
+                                  Unit="items"
+                                  ScaleWidth="5"
+                                  ScaleTickBrush="Transparent"
+                                  ScaleBrush="Transparent"
+                                  TickBrush="{StaticResource LightBrown}"
+                                  NeedleBrush="{StaticResource VeryLightBrown}"
+                                  TrailBrush="{StaticResource Brown}"
+                                  ValueBrush="{StaticResource Brown}"
+                                  UnitBrush="{StaticResource LightBrown}"
+                                  Margin="4" />
+        </Grid>
+        <Grid Margin="4"
+              Grid.Row="1"
+              Grid.Column="1">
+            <controls:RadialGauge Value="85"
+                                  Unit="items"
+                                  ScaleWidth="52"
+                                  TickBrush="Transparent"
+                                  ScaleBrush="Transparent"
+                                  ScaleTickBrush="{StaticResource VeryLightKhaki}"
+                                  TickSpacing="25"
+                                  NeedleBrush="{StaticResource Blue}"
+                                  TrailBrush="{StaticResource LightBlue}"
+                                  ValueBrush="{StaticResource Blue}"
+                                  UnitBrush="{StaticResource LightBlue}"
+                                  Margin="4" />
+        </Grid>
+        <Grid Margin="4"
+              Background="{StaticResource VeryDarkPurple}"
+              Grid.Row="1"
+              Grid.Column="2">
+            <controls:RadialGauge Value="85"
+                                  Unit="items"
+                                  ScaleWidth="10"
+                                  TrailBrush="{StaticResource LightPurple}"
+                                  TickBrush="{StaticResource VeryLightPurple}"
+                                  ValueBrush="{StaticResource LightPurple}"
+                                  UnitBrush="{StaticResource VeryLightPurple}"
+                                  NeedleBrush="{StaticResource NeedleBrush}"
+                                  Margin="4" />
+        </Grid>
     </Grid>
 </Page>

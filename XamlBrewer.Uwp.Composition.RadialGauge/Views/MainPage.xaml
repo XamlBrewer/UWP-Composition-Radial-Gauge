@@ -21,7 +21,7 @@
 
         <TextBlock Text="All XAML gauge"
                    Margin="20"
-                   FontSize="20"
+                   FontSize="32"
                    Foreground="{StaticResource SplitViewBackgroundBrush}" />
         <classic:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
                              NeedleBrush="{StaticResource NeedleBrush}"
@@ -37,7 +37,7 @@
 
         <TextBlock Text="Composition API supported gauge"
                    Grid.Column="1"
-                   FontSize="20"
+                   FontSize="32"
                    Foreground="{StaticResource SplitViewBackgroundBrush}"
                    HorizontalAlignment="Right"
                    Margin="20" />
