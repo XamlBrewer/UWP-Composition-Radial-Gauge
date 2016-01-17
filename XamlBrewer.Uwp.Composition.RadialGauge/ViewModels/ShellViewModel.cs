@@ -10,6 +10,7 @@ namespace Mvvm
             // Build the menu
             // Symbol enumeration is here: https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.symbol.aspx
             Menu.Add(new MenuItem() { Glyph = Symbol.Remote, Text = "Comparison", NavigationDestination = typeof(MainPage) });
+            Menu.Add(new MenuItem() { Glyph = Symbol.Link, Text = "Parts", NavigationDestination = typeof(PartsPage) });
             Menu.Add(new MenuItem() { Glyph = Symbol.OutlineStar, Text = "Classic", NavigationDestination = typeof(SquareOfOldPage) });
             Menu.Add(new MenuItem() { Glyph = Symbol.SolidStar, Text = "New", NavigationDestination = typeof(SquareOfNewPage) });
             Menu.Add(new MenuItem() { Glyph = Symbol.Globe, Text = "Gallery", NavigationDestination = typeof(GalleryPage) });

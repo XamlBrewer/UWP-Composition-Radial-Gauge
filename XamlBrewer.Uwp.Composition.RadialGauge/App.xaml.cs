@@ -42,10 +42,10 @@ namespace XamlBrewer.Uwp.Composition.RadialGauge
         {
 
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.DebugSettings.EnableFrameRateCounter = true;
-            }
+            //if (System.Diagnostics.Debugger.IsAttached)
+            //{
+            //    this.DebugSettings.EnableFrameRateCounter = true;
+            //}
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
