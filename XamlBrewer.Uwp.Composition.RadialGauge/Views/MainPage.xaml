@@ -8,22 +8,29 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
 
-    <Grid Background="{StaticResource PageBackgroundBrush}">
+    <Grid x:Name="Root"
+          Background="{StaticResource PageBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
+            <RowDefinition x:Name="FourthRow" />
+            <RowDefinition x:Name="FifthRow"
+                           Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="RightColumn"
+                              Width="0" />
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="All XAML gauge"
                    Margin="20"
-                   FontSize="32"
-                   Foreground="{StaticResource SplitViewBackgroundBrush}" />
-        <classic:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
+                   FontSize="24"
+                   Foreground="{StaticResource SplitViewBackgroundBrush}"
+                   HorizontalAlignment="Center" />
+        <classic:RadialGauge x:Name="XamlGauge"
+                             Value="{Binding ElementName=Slider, Path=Value}"
                              NeedleBrush="{StaticResource NeedleBrush}"
                              ScaleBrush="{StaticResource ScaleBrush}"
                              ScaleTickBrush="{StaticResource ScaleTickBrush}"
@@ -31,17 +38,23 @@
                              ValueBrush="{StaticResource TrailBrush}"
                              TickBrush="{StaticResource TickBrush}"
                              UnitBrush="{StaticResource TrailBrush}"
-                             Unit="Items"
+                             Unit="items"
                              Grid.Row="1"
-                             Margin="20 20 10 20" />
+                             Grid.Column="0"
+                             Margin="20 0" />
 
-        <TextBlock Text="Composition API supported gauge"
-                   Grid.Column="1"
-                   FontSize="32"
+        <TextBlock x:Name="CompositionTitle"
+                   Text="Composition API supported gauge"
+                   Grid.Row="2"
+                   Grid.Column="0"
+                   FontSize="24"
                    Foreground="{StaticResource SplitViewBackgroundBrush}"
-                   HorizontalAlignment="Right"
+                   HorizontalAlignment="Center"
+                   TextWrapping="WrapWholeWords"
+                   VerticalAlignment="Top"
                    Margin="20" />
-        <controls:RadialGauge Value="{Binding ElementName=Slider, Path=Value}"
+        <controls:RadialGauge x:Name="CompositionGauge"
+                              Value="{Binding ElementName=Slider, Path=Value}"
                               NeedleBrush="{StaticResource NeedleBrush}"
                               ScaleBrush="{StaticResource ScaleBrush}"
                               ScaleTickBrush="{StaticResource ScaleTickBrush}"
@@ -49,14 +62,48 @@
                               ValueBrush="{StaticResource TrailBrush}"
                               TickBrush="{StaticResource TickBrush}"
                               UnitBrush="{StaticResource TrailBrush}"
-                              Unit="Items"
-                              Grid.Row="1"
-                              Grid.Column="1"
-                              Margin="10 20 20 20" />
+                              Unit="items"
+                              Grid.Row="3"
+                              Grid.Column="0"
+                              Margin="20 0" />
         <Slider x:Name="Slider"
                 Value="75"
-                Grid.Row="2"
-                Grid.Column="1"
-                Margin="20 0" />
+                Grid.Row="4"
+                Grid.Column="0"
+                Margin="20" />
+
+        <!-- Responsive Visual States -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <!-- VisualState to be triggered when window width is >=548 effective pixels -->
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="548" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="FourthRow.Height"
+                                Value="0" />
+                        <Setter Target="FifthRow.Height"
+                                Value="0" />
+                        <Setter Target="RightColumn.Width"
+                                Value="*" />
+                        <Setter Target="XamlGauge.(Grid.Row)"
+                                Value="1" />
+                        <Setter Target="CompositionTitle.(Grid.Row)"
+                                Value="0" />
+                        <Setter Target="CompositionTitle.(Grid.Column)"
+                                Value="1" />
+                        <Setter Target="CompositionGauge.(Grid.Row)"
+                                Value="1" />
+                        <Setter Target="CompositionGauge.(Grid.Column)"
+                                Value="1" />
+                        <Setter Target="Slider.(Grid.Row)"
+                                Value="2" />
+                        <Setter Target="Slider.(Grid.Column)"
+                                Value="1" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>
