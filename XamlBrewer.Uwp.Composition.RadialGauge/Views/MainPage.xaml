@@ -66,8 +66,11 @@
                               Grid.Row="3"
                               Grid.Column="0"
                               Margin="20 0" />
+        <!-- Range is larger than gauge's, to test overflow.-->
         <Slider x:Name="Slider"
                 Value="75"
+                Minimum="-5"
+                Maximum="105"
                 Grid.Row="4"
                 Grid.Column="0"
                 Margin="20" />

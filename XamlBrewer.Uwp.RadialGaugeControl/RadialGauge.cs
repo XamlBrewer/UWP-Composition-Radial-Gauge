@@ -11,7 +11,7 @@
     using Windows.UI.Xaml.Shapes;
 
     /// <summary>
-    /// A Modern UI Radial Gauge.
+    /// A Modern UI Radial Gauge using XAML and Composition API.
     /// </summary>
     [TemplatePart(Name = ContainerPartName, Type = typeof(Grid))]
     [TemplatePart(Name = ScalePartName, Type = typeof(Path))]
@@ -21,25 +21,26 @@
     {
         #region Constants
 
+        // Template Parts.
         private const string ContainerPartName = "PART_Container";
-
         private const string ScalePartName = "PART_Scale";
-
         private const string TrailPartName = "PART_Trail";
-
         private const string ValueTextPartName = "PART_ValueText";
 
+        // For convenience.
         private const double Degrees2Radians = Math.PI / 180;
-
         private const double MinAngle = -150.0;
-
         private const double MaxAngle = 150.0;
 
         #endregion Constants
 
+        #region Composition API fields.
+
         private Compositor _compositor;
         private ContainerVisual _root;
         private SpriteVisual _needle;
+        
+        #endregion
 
         #region Dependency Property Registrations
 
@@ -88,9 +89,6 @@
         protected static readonly DependencyProperty ValueAngleProperty =
             DependencyProperty.Register("ValueAngle", typeof(double), typeof(RadialGauge), new PropertyMetadata(null));
 
-        //protected static readonly DependencyProperty TicksProperty =
-        //    DependencyProperty.Register("Ticks", typeof(IEnumerable<double>), typeof(RadialGauge), new PropertyMetadata(null));
-
         #endregion Dependency Property Registrations
 
         #region Constructors
@@ -101,8 +99,6 @@
         }
 
         #endregion Constructors
-
-
 
         #region Properties
 
@@ -242,7 +238,7 @@
 
         protected override void OnApplyTemplate()
         {
-            // Draw Scale
+            // Scale.
             var scale = this.GetTemplateChild(ScalePartName) as Path;
             if (scale != null)
             {
@@ -261,12 +257,11 @@
                 scale.Data = pg;
             }
 
-
             var container = this.GetTemplateChild(ContainerPartName) as Grid;
             _root = container.GetVisual();
             _compositor = _root.Compositor;
 
-            // Draw Ticks
+            // Ticks.
             SpriteVisual tick;
             for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
@@ -279,7 +274,7 @@
                 _root.Children.InsertAtTop(tick);
             }
 
-            // Draw Scale Ticks
+            // Scale Ticks.
             for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
                 tick = _compositor.CreateSpriteVisual();
@@ -291,7 +286,7 @@
                 _root.Children.InsertAtTop(tick);
             }
 
-            // Needle
+            // Needle.
             _needle = _compositor.CreateSpriteVisual();
             _needle.Size = new Vector2(5.0f, 100.0f);
             _needle.Brush = _compositor.CreateColorBrush(NeedleBrush.Color);
@@ -308,6 +303,9 @@
             OnValueChanged(d);
         }
 
+        /// <summary>
+        /// Updates the needle rotation, the trail, and the value text according to the new value.
+        /// </summary>
         private static void OnValueChanged(DependencyObject d)
         {
             RadialGauge c = (RadialGauge)d;
@@ -327,19 +325,19 @@
                 var trail = c.GetTemplateChild(TrailPartName) as Path;
                 if (trail != null)
                 {
-                    if (c.ValueAngle > -146)
+                    if (c.ValueAngle > (MinAngle + 4))
                     {
                         trail.Visibility = Visibility.Visible;
                         var pg = new PathGeometry();
                         var pf = new PathFigure();
                         pf.IsClosed = false;
-                        pf.StartPoint = c.ScalePoint(-150, middleOfScale);
+                        pf.StartPoint = c.ScalePoint(MinAngle, middleOfScale);
                         var seg = new ArcSegment();
                         seg.SweepDirection = SweepDirection.Clockwise;
                         // We start from -150, so +30 becomes a large arc.
-                        seg.IsLargeArc = c.ValueAngle > 30;
+                        seg.IsLargeArc = c.ValueAngle > (180 + MinAngle);
                         seg.Size = new Size(middleOfScale, middleOfScale);
-                        seg.Point = c.ScalePoint(c.ValueAngle, middleOfScale);
+                        seg.Point = c.ScalePoint(Math.Min(c.ValueAngle, MaxAngle),  middleOfScale);  // On overflow, stop trail at MaxAngle.
                         pf.Segments.Add(seg);
                         pg.Figures.Add(pf);
                         trail.Data = pg;
@@ -358,6 +356,10 @@
             }
         }
 
+        /// <summary>
+        /// Transforms a set of polar coordinates into a Windows Point.
+        /// </summary>
+        /// <returns></returns>
         private Point ScalePoint(double angle, double middleOfScale)
         {
             return new Point(100 + Math.Sin(Degrees2Radians * angle) * middleOfScale, 100 - Math.Cos(Degrees2Radians * angle) * middleOfScale);
@@ -365,21 +367,19 @@
 
         private double ValueToAngle(double value)
         {
-            // Off-scale to the left
+            // Off-scale on the left.
             if (value < this.Minimum)
             {
                 return MinAngle - 7.5;
             }
 
-            // Off-scale to the right
+            // Off-scale on the right.
             if (value > this.Maximum)
             {
                 return MaxAngle + 7.5;
             }
 
-            double angularRange = MaxAngle - MinAngle;
-
-            return (value - this.Minimum) / (this.Maximum - this.Minimum) * angularRange + MinAngle;
+            return (value - this.Minimum) / (this.Maximum - this.Minimum) * (MaxAngle - MinAngle) + MinAngle;
         }
     }
 }
