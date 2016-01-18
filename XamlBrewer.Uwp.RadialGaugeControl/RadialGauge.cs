@@ -13,6 +13,7 @@
     /// <summary>
     /// A Modern UI Radial Gauge using XAML and Composition API.
     /// </summary>
+    /// <remarks>All calculations are for a 100x100 square. The viewbox will do the rest.</remarks>
     [TemplatePart(Name = ContainerPartName, Type = typeof(Grid))]
     [TemplatePart(Name = ScalePartName, Type = typeof(Path))]
     [TemplatePart(Name = TrailPartName, Type = typeof(Path))]
@@ -29,8 +30,17 @@
 
         // For convenience.
         private const double Degrees2Radians = Math.PI / 180;
+
+        // Candidate dependency properties.
+        // Feel free to modify...
         private const double MinAngle = -150.0;
         private const double MaxAngle = 150.0;
+        private const float TickHeight = 18.0f;
+        private const float TickWidth = 5.0f;
+        private const float ScalePadding = 23.0f;
+        private const float ScaleTickWidth = 2.5f;
+        private const float NeedleWidth = 5.0f;
+        private const float NeedleHeight = 100.0f;
 
         #endregion Constants
 
@@ -39,7 +49,7 @@
         private Compositor _compositor;
         private ContainerVisual _root;
         private SpriteVisual _needle;
-        
+
         #endregion
 
         #region Dependency Property Registrations
@@ -245,7 +255,7 @@
                 var pg = new PathGeometry();
                 var pf = new PathFigure();
                 pf.IsClosed = false;
-                var middleOfScale = 77 - this.ScaleWidth / 2;
+                var middleOfScale = 100 - ScalePadding - this.ScaleWidth / 2;
                 pf.StartPoint = this.ScalePoint(MinAngle, middleOfScale);
                 var seg = new ArcSegment();
                 seg.SweepDirection = SweepDirection.Clockwise;
@@ -266,10 +276,10 @@
             for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
                 tick = _compositor.CreateSpriteVisual();
-                tick.Size = new Vector2(5.0f, 18.0f);
+                tick.Size = new Vector2(TickWidth, TickHeight);
                 tick.Brush = _compositor.CreateColorBrush(TickBrush.Color);
-                tick.Offset = new Vector3(97.5f, 0.0f, 0);
-                tick.CenterPoint = new Vector3(2.5f, 100.0f, 0);
+                tick.Offset = new Vector3(100 - TickWidth / 2, 0.0f, 0);
+                tick.CenterPoint = new Vector3(TickWidth / 2, 100.0f, 0);
                 tick.RotationAngleInDegrees = (float)ValueToAngle(i);
                 _root.Children.InsertAtTop(tick);
             }
@@ -278,20 +288,20 @@
             for (double i = Minimum; i <= Maximum; i += TickSpacing)
             {
                 tick = _compositor.CreateSpriteVisual();
-                tick.Size = new Vector2(2.0f, (float)ScaleWidth);
+                tick.Size = new Vector2(ScaleTickWidth, (float)ScaleWidth);
                 tick.Brush = _compositor.CreateColorBrush(ScaleTickBrush.Color);
-                tick.Offset = new Vector3(99.0f, 23.0f, 0);
-                tick.CenterPoint = new Vector3(1.0f, 77.0f, 0);
+                tick.Offset = new Vector3(100 - ScaleTickWidth / 2, ScalePadding, 0);
+                tick.CenterPoint = new Vector3(ScaleTickWidth / 2, 100 - ScalePadding, 0);
                 tick.RotationAngleInDegrees = (float)ValueToAngle(i);
                 _root.Children.InsertAtTop(tick);
             }
 
             // Needle.
             _needle = _compositor.CreateSpriteVisual();
-            _needle.Size = new Vector2(5.0f, 100.0f);
+            _needle.Size = new Vector2(NeedleWidth, NeedleHeight);
             _needle.Brush = _compositor.CreateColorBrush(NeedleBrush.Color);
-            _needle.CenterPoint = new Vector3(2.5f, 100.0f, 0);
-            _needle.Offset = new Vector3(97.5f, 0.0f, 0);
+            _needle.CenterPoint = new Vector3(NeedleWidth / 2, NeedleHeight, 0);
+            _needle.Offset = new Vector3(100 - NeedleWidth / 2, 100 - NeedleHeight, 0);
             _root.Children.InsertAtTop(_needle);
 
             OnValueChanged(this);
@@ -311,7 +321,7 @@
             RadialGauge c = (RadialGauge)d;
             if (!Double.IsNaN(c.Value))
             {
-                var middleOfScale = 77 - c.ScaleWidth / 2;
+                var middleOfScale = 100 - ScalePadding - c.ScaleWidth / 2;
                 var valueText = c.GetTemplateChild(ValueTextPartName) as TextBlock;
                 c.ValueAngle = c.ValueToAngle(c.Value);
 
@@ -325,7 +335,7 @@
                 var trail = c.GetTemplateChild(TrailPartName) as Path;
                 if (trail != null)
                 {
-                    if (c.ValueAngle > (MinAngle + 4))
+                    if (c.ValueAngle > MinAngle)
                     {
                         trail.Visibility = Visibility.Visible;
                         var pg = new PathGeometry();
@@ -337,7 +347,7 @@
                         // We start from -150, so +30 becomes a large arc.
                         seg.IsLargeArc = c.ValueAngle > (180 + MinAngle);
                         seg.Size = new Size(middleOfScale, middleOfScale);
-                        seg.Point = c.ScalePoint(Math.Min(c.ValueAngle, MaxAngle),  middleOfScale);  // On overflow, stop trail at MaxAngle.
+                        seg.Point = c.ScalePoint(Math.Min(c.ValueAngle, MaxAngle), middleOfScale);  // On overflow, stop trail at MaxAngle.
                         pf.Segments.Add(seg);
                         pg.Figures.Add(pf);
                         trail.Data = pg;
@@ -359,12 +369,15 @@
         /// <summary>
         /// Transforms a set of polar coordinates into a Windows Point.
         /// </summary>
-        /// <returns></returns>
         private Point ScalePoint(double angle, double middleOfScale)
         {
             return new Point(100 + Math.Sin(Degrees2Radians * angle) * middleOfScale, 100 - Math.Cos(Degrees2Radians * angle) * middleOfScale);
         }
 
+        /// <summary>
+        /// Returns the angle for a specific value.
+        /// </summary>
+        /// <returns>In degrees.</returns>
         private double ValueToAngle(double value)
         {
             // Off-scale on the left.
